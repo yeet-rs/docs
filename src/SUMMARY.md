@@ -9,3 +9,4 @@
 - [Varlink](developer/varlink.md)
 - [Detach](developer/detach.md)
 - [Secrets](developer/secrets.md)
+- [osquery](developer/osquery.md)

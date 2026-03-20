@@ -1,0 +1,15 @@
+[book]
+authors = ["Srylax"]
+language = "en"
+src = "src"
+title = "Yeet Documentation"
+
+[preprocessor]
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[output]
+[output.html]
+additional-js = ["deps/mermaid.min.js", "deps/mermaid-init.js"]
+git-repository-url = "https://github.com/yeet-rs/docs"
+edit-url-template = "https://github.com/yeet-rs/docs/edit/main/guide/{path}"

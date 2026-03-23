@@ -8,10 +8,63 @@ Osquery (https://osquery.io/) is a tool that allows to query information about a
 - osquery extension
 - osquery remote api (tls extension)
 
-The logs forwarding option the the most secure one. With the huge downside that you are not able to run distributed queries and have to make an config deployment each time you want to change a scheduled query.
+The logs forwarding option is the most secure one - with the huge downside that you are not able to run distributed queries and have to make an config deployment each time you want to change a scheduled query.
 
-If you want to use osquery as an investigation tool / information collection in an interactive way you either have to develop a new extension or use the remote api.
+If you want to use osquery as an investigation tool / run information collection in an interactive way you either have to develop a new extension or use the remote api.
 To orchestrate all the nodes (hosts) you need a central server which implements the remote api. This design document describes this remote api implementation in yeet. To see possible alternative implementations see [Alternative remote api implementations](#alternative-remote-api-implementations)
+
+## Quick overview
+
+```mermaid
+architecture-beta
+    group yeet(cloud)[yeet]
+    group ext(cloud)[Integrations TBD]
+    group cve(internet)[CVE information ingestion TBD]
+
+    service node(server)[osquery node]
+    service yeet_storage(disk)[Yeet Log Storage] in yeet
+    service yeet_server(server)[Yeet Osquery Server] in yeet
+    service cve_engine(server)[CVE enrichment] in yeet
+
+    service dd(server)[Defect Dojo] in ext
+    service splunk(server)[Splunk] in ext
+
+    service cpe(database)[CPE] in cve
+    service nvd(database)[NVD] in cve
+    service oval(database)[OVAL] in cve
+    service cvrf(database)[CVRF] in cve
+    service epss(database)[EPSS] in cve
+
+    yeet_storage:B <-- T:yeet_server
+    node:R --> L:yeet_server
+    yeet_server:B --> T:cve_engine
+    yeet_server:R --> L:splunk
+    cve_engine:R -->  L:dd
+
+    junction j_cpe
+    cpe:T -- B:j_cpe
+
+    junction j_epss
+    epss:T -- B:j_epss
+
+    junction j_nvd
+    nvd:T -- B:j_nvd
+
+    junction j_oval
+    oval:T -- B:j_oval
+
+    junction j_cvrf
+    cvrf:T -- B:j_cvrf
+
+
+    j_cpe:R -- L:j_nvd
+    j_cvrf:R -- L:j_epss
+
+    j_nvd:R -- L:j_oval
+    j_cvrf:L -- R:j_oval
+    j_epss:R --> L:cve_engine
+
+```
 
 ## Possible use-cases
 
@@ -85,6 +138,7 @@ carver_continue_endpoint = "/osquery/carver/block";
 The osquery client provides an enroll secret set with `enroll_secret_path`.
 Yeet expects the client to supply the content defined in the yeet secret called `osquery-enroll`.
 This secret has to be create via `yeet secret add`. The content is completely arbitrary.
+Once a node is enrolled it can not be removed by changing the yeet secret.
 The node is free to use any `host_identifier` as long as it is UNIQUE for all nodes.
 
 The response from the server responds with an UUIDv4 `node_key`.

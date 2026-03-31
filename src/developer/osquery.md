@@ -133,6 +133,17 @@ carver_start_endpoint = "/osquery/carver/init";
 carver_continue_endpoint = "/osquery/carver/block";
 ```
 
+## Splunk logs forwarding
+
+Yeet has a native integration to forward osquery logs to splunk. Currently only distributed queries are available.
+To connect to splunk the HEC connection is used. Configure it with:
+
+- YEET_SPLUNK_INDEX: name of the index it should load the data into
+- YEET_SPLUNK_URL: the url to your splunk server ending in `services/collector/event`
+- YEET_SPLUNK_TOKEN: Splunk auth token so that yeet can send the data
+
+TODO: document the different types of events
+
 #### Enrollment
 
 The osquery client provides an enroll secret set with `enroll_secret_path`.
@@ -147,6 +158,5 @@ The response from the server responds with an UUIDv4 `node_key`.
 
 ## Future Work
 
-- integrate an cve scanning into yeet so that you can find cves in osquery
-- splunk forwarder
+- integrate a cve scanning (kepler) into yeet so that you can find cves in osquery
 - osquery extension

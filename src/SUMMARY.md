@@ -2,6 +2,7 @@
 
 - [Introduction to Yeet](./intro.md)
 - [Quickstart](./quickstart.md)
+- [Install](./install.md)
 
 # Design Documents
 

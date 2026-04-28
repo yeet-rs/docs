@@ -3,6 +3,8 @@
 - [Introduction to Yeet](./intro.md)
 - [Quickstart](./quickstart.md)
 - [Install](./install.md)
+- [Install yeetd](./install.md)
+- [Secrets](./secrets.md)
 
 # Design Documents
 
